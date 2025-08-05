@@ -10,11 +10,21 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://sensational-dasik-1d8ae5.netlify.app",  // replace with actual Netlify URL
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",  // Allow frontend's origin
-    // methods: ["GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"], // Allow methods including PATCH
-    credentials: true,  // Allow credentials (cookies) to be sent with the request
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   })
 );
 
